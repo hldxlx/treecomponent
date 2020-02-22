@@ -28,6 +28,6 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 ```
-      树组件
+      vue封装自己的树组件
       新建vue.config.js  配置proxy
 ```

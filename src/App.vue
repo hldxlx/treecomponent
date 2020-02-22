@@ -1,6 +1,10 @@
 <template>
     <div id="app">
-        <MyTree :data="data"></MyTree>
+        <MyTree
+                :data="data"
+                :fileDrop="fileDrop"
+                :diectoryDrop="diectoryDrop"
+        ></MyTree>
     </div>
 </template>
 
@@ -10,7 +14,14 @@
     export default {
         data(){
             return {
-                data:[]
+                data:[],
+                fileDrop:[
+                    {text:'rm',value:'删除文件'}
+                ],
+                diectoryDrop:[
+                    {text:'rn',value:'修改名字'},
+                    {text:'rm',value:'删除文件夹'}
+                ]
             }
         },
         components:{
@@ -20,6 +31,7 @@
             let {data} = await getTreeList();
             console.log(data);
             //1 扁平的数据如何变成 多层数据 递归数据
+            data.parent.forEach(p=>p.type = 'parent');
             this.data = [...data.parent,...data.child];
             //{id:1, {name:'文件夹1',pid:0,id:1}}
 

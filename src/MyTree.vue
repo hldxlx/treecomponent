@@ -1,6 +1,9 @@
 <template>
     <el-tree
             :data="allData"
+            default-expand-all
+            :render-content="renderContent"
+            :expand-on-click-node="false"
     ></el-tree>
 </template>
 
@@ -11,7 +14,9 @@
             data:{
                 type:Array,
                 default:()=>[]
-            }
+            },
+            fileDrop:Array,
+            diectoryDrop:Array
         },
         data(){
             return {
@@ -24,12 +29,37 @@
             }
         },
         methods:{
+            isParent(data){
+                return data.type == 'parent'
+            },
+            renderContent(h, {node, data}) {
+                let list = this.isParent(data)?this.diectoryDrop:this.fileDrop;
+                return (<div style={{width:'100%'}}>
+                        {
+                            this.isParent(data)?
+                            node.expanded?<i class="el-icon-folder-opened"></i>:
+                            <i class="el-icon-folder"></i>:
+                            <i class="el-icon-document"></i>
+                        }
+                       {data.name}
+                        <el-dropdown placement="bottom-start" trigger="click">
+                            <span class="el-dropdown-link">
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                {list.map(item =>(
+                                    <el-dropdown-item>{item.value}</el-dropdown-item>
+                                 ))}
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>);
+            },
             transformData(){
                 //需要根据数据进行克隆，克隆后的数据再进行操作
                 let AllData = _.cloneDeep(this.data);
                 //目的就是防止在子组件中操作我们父组件的数据
                 let treeMapList = AllData.reduce((memo,current) =>{
-                    current.label = current.name;
+                    //current.label = current.name;
                     memo[current["id"]] = current;
                     return memo;
                 },{})
@@ -53,4 +83,12 @@
         }
     }
 </script>
+<style>
+    .el-tree{
+        width: 50%;
+    }
+    .el-dropdown{
+        float: right;
+    }
 
+</style>
