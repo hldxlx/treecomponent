@@ -1,9 +1,12 @@
 <template>
     <div id="app">
         <MyTree
-                :data="data"
+                :data.sync="data"
                 :fileDrop="fileDrop"
                 :diectoryDrop="diectoryDrop"
+                v-if="data.length"
+                :delete="deleteFn"
+                :rname="rname"
         ></MyTree>
     </div>
 </template>
@@ -26,6 +29,18 @@
         },
         components:{
             MyTree
+        },
+        methods:{
+            rname(id,newName){
+                console.log(id, newName);
+            },
+            deleteFn(){//这个方法必须返回一个promise
+                return new Promise((resolve) =>{
+                    setTimeout(()=>{
+                        resolve();
+                    },3000)
+                })
+            }
         },
         async mounted(){
             let {data} = await getTreeList();
